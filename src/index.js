@@ -5,7 +5,8 @@ import debounce from './lib/debounce';
 
 class OnVisible extends Component {
     constructor() {
-        super(...arguments);        
+        super(...arguments);
+        this.onScroll = debounce(this.onScroll.bind(this), 10);
         this.state = {
             visible: false,
             bottom: 0,
@@ -13,7 +14,6 @@ class OnVisible extends Component {
         };
     }
     componentDidMount() {
-        this.onScroll = debounce(this.onScroll.bind(this), 10);
         this.onScroll();
         window.addEventListener('scroll', this.onScroll);
         window.addEventListener('resize', this.onScroll);
@@ -24,28 +24,31 @@ class OnVisible extends Component {
     onScroll() {
         const pos = window.pageYOffset + window.innerHeight;
         const visbleTriggerRatio = (this.props.percent && this.props.percent / 100) || 0.5;
-        const box = this.holder.getBoundingClientRect();
 
-        const pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
-        const docTop = document.documentElement.clientTop || 0;
+        if(this.holder) {
+            const box = this.holder.getBoundingClientRect();
 
-        const top = box.top + (box.height * visbleTriggerRatio) + (pageYOffset - docTop);
-        const isVisible = top < pos;
-        const end = () => {
-            this.props.onChange(this.state.visible);
-        };
-        if (isVisible) {
-            this.setState({
-                visible: true,
-                top
-            }, end);
-            if (!this.props.bounce) {
-                this.stopListening();
+            const pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
+            const docTop = document.documentElement.clientTop || 0;
+
+            const top = box.top + (box.height * visbleTriggerRatio) + (pageYOffset - docTop);
+            const isVisible = top < pos;
+            const end = () => {
+                this.props.onChange(this.state.visible);
+            };
+            if (isVisible) {
+                this.setState({
+                    visible: true,
+                    top
+                }, end);
+                if (!this.props.bounce) {
+                    this.stopListening();
+                }
+            } else if (this.state.visible) {
+                this.setState({
+                    visible: false
+                }, end);
             }
-        } else if (this.state.visible) {
-            this.setState({
-                visible: false
-            }, end);
         }
     }
     stopListening() {

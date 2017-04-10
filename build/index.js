@@ -39,6 +39,7 @@ var OnVisible = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (OnVisible.__proto__ || Object.getPrototypeOf(OnVisible)).apply(this, arguments));
 
+        _this.onScroll = (0, _debounce2.default)(_this.onScroll.bind(_this), 10);
         _this.state = {
             visible: false,
             bottom: 0,
@@ -50,7 +51,6 @@ var OnVisible = function (_Component) {
     _createClass(OnVisible, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.onScroll = (0, _debounce2.default)(this.onScroll.bind(this), 10);
             this.onScroll();
             window.addEventListener('scroll', this.onScroll);
             window.addEventListener('resize', this.onScroll);
@@ -67,28 +67,31 @@ var OnVisible = function (_Component) {
 
             var pos = window.pageYOffset + window.innerHeight;
             var visbleTriggerRatio = this.props.percent && this.props.percent / 100 || 0.5;
-            var box = this.holder.getBoundingClientRect();
 
-            var pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
-            var docTop = document.documentElement.clientTop || 0;
+            if (this.holder) {
+                var box = this.holder.getBoundingClientRect();
 
-            var top = box.top + box.height * visbleTriggerRatio + (pageYOffset - docTop);
-            var isVisible = top < pos;
-            var end = function end() {
-                _this2.props.onChange(_this2.state.visible);
-            };
-            if (isVisible) {
-                this.setState({
-                    visible: true,
-                    top: top
-                }, end);
-                if (!this.props.bounce) {
-                    this.stopListening();
+                var pageYOffset = window.pageYOffset || document.documentElement.scrollTop;
+                var docTop = document.documentElement.clientTop || 0;
+
+                var top = box.top + box.height * visbleTriggerRatio + (pageYOffset - docTop);
+                var isVisible = top < pos;
+                var end = function end() {
+                    _this2.props.onChange(_this2.state.visible);
+                };
+                if (isVisible) {
+                    this.setState({
+                        visible: true,
+                        top: top
+                    }, end);
+                    if (!this.props.bounce) {
+                        this.stopListening();
+                    }
+                } else if (this.state.visible) {
+                    this.setState({
+                        visible: false
+                    }, end);
                 }
-            } else if (this.state.visible) {
-                this.setState({
-                    visible: false
-                }, end);
             }
         }
     }, {
