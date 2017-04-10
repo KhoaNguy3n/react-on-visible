@@ -5,8 +5,7 @@ import debounce from './lib/debounce';
 
 class OnVisible extends Component {
     constructor() {
-        super(...arguments);
-        this.onScroll = debounce(this.onScroll.bind(this), 10);
+        super(...arguments);        
         this.state = {
             visible: false,
             bottom: 0,
@@ -14,6 +13,7 @@ class OnVisible extends Component {
         };
     }
     componentDidMount() {
+        this.onScroll = debounce(this.onScroll.bind(this), 10);
         this.onScroll();
         window.addEventListener('scroll', this.onScroll);
         window.addEventListener('resize', this.onScroll);
