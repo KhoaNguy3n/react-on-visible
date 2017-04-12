@@ -1,12 +1,11 @@
 /* global window, document */
 import React, { PropTypes, Component } from 'react';
 import cx from 'classnames';
-import debounce from './lib/debounce';
 
 class OnVisible extends Component {
     constructor() {
         super(...arguments);
-        this.onScroll = debounce(this.onScroll.bind(this), 10);
+        this.onScroll = this.onScroll.bind(this);
         this.state = {
             visible: false,
             bottom: 0,

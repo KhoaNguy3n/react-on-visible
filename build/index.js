@@ -16,10 +16,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _debounce = require('./lib/debounce');
-
-var _debounce2 = _interopRequireDefault(_debounce);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -39,7 +35,7 @@ var OnVisible = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (OnVisible.__proto__ || Object.getPrototypeOf(OnVisible)).apply(this, arguments));
 
-        _this.onScroll = (0, _debounce2.default)(_this.onScroll.bind(_this), 10);
+        _this.onScroll = _this.onScroll.bind(_this);
         _this.state = {
             visible: false,
             bottom: 0,
